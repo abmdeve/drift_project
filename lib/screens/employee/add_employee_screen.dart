@@ -48,7 +48,12 @@ class _AddEmployeeScreenState extends State<AddEmployeeScreen> {
               height: 8.0,
             ),
             CustomTextFormField(
-                controller: _dateOfBirthController, textLabel: "Date of Birth"),
+              onTap: () {
+                pickDateOfBirth(context: context);
+              },
+              controller: _dateOfBirthController,
+              textLabel: "Date of birth",
+            ),
             const SizedBox(
               height: 8.0,
             ),
@@ -56,5 +61,34 @@ class _AddEmployeeScreenState extends State<AddEmployeeScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> pickDateOfBirth({required BuildContext context}) async {
+    final initialDate = DateTime.now();
+    final newDate = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime(DateTime.now().year - 100),
+      lastDate: DateTime(DateTime.now().year + 1),
+      builder: (context, child) => Theme(
+        data: ThemeData().copyWith(
+          colorScheme: const ColorScheme.light(
+            primary: Colors.pink,
+            onPrimary: Colors.white,
+            onSurface: Colors.black,
+          ),
+          dialogBackgroundColor: Colors.white,
+        ),
+        child: child ?? const Text(""),
+      ),
+    );
+
+    if (newDate == null) {
+      return;
+    }
+
+    setState(() {
+      _dateOfBirthController.text = newDate.toIso8601String();
+    });
   }
 }
