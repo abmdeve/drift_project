@@ -52,10 +52,17 @@ class _EditEmployeeScreenState extends State<EditEmployeeScreen> {
         centerTitle: true,
         actions: [
           IconButton(
-              onPressed: () {
-                editEmployee();
-              },
-              icon: const Icon(Icons.save)),
+            onPressed: () {
+              editEmployee();
+            },
+            icon: const Icon(Icons.save),
+          ),
+          IconButton(
+            onPressed: () {
+              deleteEmployee();
+            },
+            icon: const Icon(Icons.delete),
+          ),
         ],
       ),
       body: Padding(
@@ -139,6 +146,30 @@ class _EditEmployeeScreenState extends State<EditEmployeeScreen> {
               backgroundColor: Colors.pink,
               content: Text(
                 "Employee updated: $value",
+                style: const TextStyle(color: Colors.white),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () =>
+                      ScaffoldMessenger.of(context).hideCurrentMaterialBanner(),
+                  child: const Text(
+                    "Close",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+  }
+
+  void deleteEmployee() {
+    _db.deleteEmployee(widget.id).then(
+          (value) => ScaffoldMessenger.of(context).showMaterialBanner(
+            MaterialBanner(
+              backgroundColor: Colors.pink,
+              content: Text(
+                "Employee deleted: $value",
                 style: const TextStyle(color: Colors.white),
               ),
               actions: [
