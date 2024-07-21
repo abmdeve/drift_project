@@ -46,7 +46,10 @@ class _AddEmployeeScreenState extends State<AddEmployeeScreen> {
         centerTitle: true,
         actions: [
           IconButton(
-              onPressed: () => addEmployee, icon: const Icon(Icons.save)),
+              onPressed: () {
+                addEmployee();
+              },
+              icon: const Icon(Icons.save)),
         ],
       ),
       body: Padding(
