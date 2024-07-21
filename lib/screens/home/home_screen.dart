@@ -56,8 +56,16 @@ class _HomeScreenState extends State<HomeScreen> {
           if (employees != null) {
             return ListView.builder(
               itemCount: employees.length,
-              itemBuilder: (context, index) =>
-                  EmployeeCard(employee: employees[index]),
+              itemBuilder: (context, index) => EmployeeCard(
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/edit_employee',
+                    arguments: employees[index].id,
+                  );
+                },
+                employee: employees[index],
+              ),
             );
           }
           return const Text("No data found");
