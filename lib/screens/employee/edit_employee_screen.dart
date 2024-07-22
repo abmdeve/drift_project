@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart' as drift;
 import 'package:drift_project/data/local/db/app_db.dart';
 import 'package:drift_project/screens/widget/custom_text_form_field.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -14,6 +15,7 @@ class EditEmployeeScreen extends StatefulWidget {
 }
 
 class _EditEmployeeScreenState extends State<EditEmployeeScreen> {
+  final _formKey = GlobalKey<FormState>();
   late AppDb _db;
   late EmployeeEntityData _employeeData;
   final TextEditingController _userNameController = TextEditingController();
@@ -69,30 +71,37 @@ class _EditEmployeeScreenState extends State<EditEmployeeScreen> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            CustomTextFormField(
-                controller: _userNameController, textLabel: "User Name"),
-            const SizedBox(
-              height: 8.0,
-            ),
-            CustomTextFormField(
-                controller: _firstNameController, textLabel: "First Name"),
-            const SizedBox(
-              height: 8.0,
-            ),
-            CustomTextFormField(
-                controller: _lastNameController, textLabel: "Last Name"),
-            const SizedBox(
-              height: 8.0,
-            ),
-            CustomTextFormField(
-              onTap: () {
-                pickDateOfBirth(context: context);
-              },
-              controller: _dateOfBirthController,
-              textLabel: "Date of birth",
-            ),
-            const SizedBox(
-              height: 8.0,
+            Form(
+              child: Column(
+                children: [
+                  CustomTextFormField(
+                      controller: _userNameController, textLabel: "User Name"),
+                  const SizedBox(
+                    height: 8.0,
+                  ),
+                  CustomTextFormField(
+                      controller: _firstNameController,
+                      textLabel: "First Name"),
+                  const SizedBox(
+                    height: 8.0,
+                  ),
+                  CustomTextFormField(
+                      controller: _lastNameController, textLabel: "Last Name"),
+                  const SizedBox(
+                    height: 8.0,
+                  ),
+                  CustomTextFormField(
+                    onTap: () {
+                      pickDateOfBirth(context: context);
+                    },
+                    controller: _dateOfBirthController,
+                    textLabel: "Date of birth",
+                  ),
+                  const SizedBox(
+                    height: 8.0,
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -132,35 +141,39 @@ class _EditEmployeeScreenState extends State<EditEmployeeScreen> {
   }
 
   void editEmployee() {
-    final entity = EmployeeEntityCompanion(
-      id: drift.Value(widget.id),
-      userName: drift.Value(_userNameController.text),
-      firstName: drift.Value(_firstNameController.text),
-      lastName: drift.Value(_lastNameController.text),
-      dateOfBirth: drift.Value(_dateOfBirth!),
-    );
+    final isValid = _formKey.currentState?.validate();
 
-    _db.updateEmployee(entity).then(
-          (value) => ScaffoldMessenger.of(context).showMaterialBanner(
-            MaterialBanner(
-              backgroundColor: Colors.pink,
-              content: Text(
-                "Employee updated: $value",
-                style: const TextStyle(color: Colors.white),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () =>
-                      ScaffoldMessenger.of(context).hideCurrentMaterialBanner(),
-                  child: const Text(
-                    "Close",
-                    style: TextStyle(color: Colors.white),
-                  ),
+    if(isValid != null && isValid){
+      final entity = EmployeeEntityCompanion(
+        id: drift.Value(widget.id),
+        userName: drift.Value(_userNameController.text),
+        firstName: drift.Value(_firstNameController.text),
+        lastName: drift.Value(_lastNameController.text),
+        dateOfBirth: drift.Value(_dateOfBirth!),
+      );
+
+      _db.updateEmployee(entity).then(
+            (value) => ScaffoldMessenger.of(context).showMaterialBanner(
+              MaterialBanner(
+                backgroundColor: Colors.pink,
+                content: Text(
+                  "Employee updated: $value",
+                  style: const TextStyle(color: Colors.white),
                 ),
-              ],
+                actions: [
+                  TextButton(
+                    onPressed: () => ScaffoldMessenger.of(context)
+                        .hideCurrentMaterialBanner(),
+                    child: const Text(
+                      "Close",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
+          );
+    }
   }
 
   void deleteEmployee() {
