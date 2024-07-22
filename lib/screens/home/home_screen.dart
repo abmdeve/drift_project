@@ -1,4 +1,6 @@
 import 'package:drift_project/data/local/db/app_db.dart';
+import 'package:drift_project/screens/employee/employee_future.dart';
+import 'package:drift_project/screens/employee/employee_stream_screen.dart';
 import 'package:drift_project/screens/widget/employee_card.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +12,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int currentIndex = 0;
   late AppDb _db;
+  final pages = const [
+    EmployeeFutureScreen(),
+    EmployeeStreamScreen(),
+  ];
 
   @override
   void initState() {
@@ -29,48 +36,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Home"),
-        centerTitle: true,
-      ),
-      body: FutureBuilder(
-        future: _db.getEmployees(),
-        builder: (context, snapshot) {
-          final List<EmployeeEntityData>? employees = snapshot.data;
 
-          if (snapshot.connectionState != ConnectionState.done) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
-          if (snapshot.hasError) {
-            return Center(
-              child: Text(
-                snapshot.error.toString(),
-                style: const TextStyle(),
-              ),
-            );
-          }
-
-          if (employees != null) {
-            return ListView.builder(
-              itemCount: employees.length,
-              itemBuilder: (context, index) => EmployeeCard(
-                onTap: () {
-                  Navigator.pushNamed(
-                    context,
-                    '/edit_employee',
-                    arguments: employees[index].id,
-                  );
-                },
-                employee: employees[index],
-              ),
-            );
-          }
-          return const Text("No data found");
-        },
-      ),
+      body: pages[currentIndex],
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Navigator.pushNamed(context, '/add_employee');
@@ -78,6 +45,30 @@ class _HomeScreenState extends State<HomeScreen> {
         icon: const Icon(Icons.add),
         label: const Text("Add Employee"),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+          currentIndex: currentIndex,
+          onTap: (value) {
+            setState(() {
+              currentIndex = value;
+            });
+          },
+          backgroundColor: Colors.blue.shade300,
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.white30,
+          showSelectedLabels: false,
+          showUnselectedLabels: true,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.list),
+              activeIcon: Icon(Icons.list_outlined),
+              label: 'Employee Future',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.list),
+              activeIcon: Icon(Icons.list_outlined),
+              label: 'Employee Stream',
+            ),
+          ]),
     );
   }
 }

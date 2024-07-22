@@ -1,9 +1,18 @@
+import 'package:drift_project/data/local/db/app_db.dart';
 import 'package:drift_project/route/route_generator.dart';
 import 'package:drift_project/screens/home/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    Provider(
+      create: (context) => AppDb(),
+      child: const MyApp(),
+      dispose: (context, AppDb db) => db.close(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
