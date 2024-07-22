@@ -34,8 +34,8 @@ class _EmployeeStreamScreenState extends State<EmployeeStreamScreen> {
         title: const Text("Employee Stream"),
         centerTitle: true,
       ),
-      body: FutureBuilder<List<EmployeeEntityData>>(
-        future: Provider.of<AppDb>(context).getEmployees(),
+      body: StreamBuilder<List<EmployeeEntityData>>(
+        stream: Provider.of<AppDb>(context).getEmployeeStream(),
         builder: (context, snapshot) {
           final List<EmployeeEntityData>? employees = snapshot.data;
 

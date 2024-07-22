@@ -4,6 +4,7 @@ import 'package:drift_project/screens/widget/custom_text_form_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class AddEmployeeScreen extends StatefulWidget {
   const AddEmployeeScreen({super.key});
@@ -14,7 +15,8 @@ class AddEmployeeScreen extends StatefulWidget {
 
 class _AddEmployeeScreenState extends State<AddEmployeeScreen> {
   final _formKey = GlobalKey<FormState>();
-  late AppDb _db;
+
+  //late AppDb _db;
   final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
@@ -26,13 +28,13 @@ class _AddEmployeeScreenState extends State<AddEmployeeScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _db = AppDb();
+    //_db = AppDb();
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
-    _db.close();
+    //_db.close();
     _userNameController.dispose();
     _firstNameController.dispose();
     _lastNameController.dispose();
@@ -139,7 +141,9 @@ class _AddEmployeeScreenState extends State<AddEmployeeScreen> {
         dateOfBirth: drift.Value(_dateOfBirth!),
       );
 
-      _db.insertEmployee(entity).then(
+      //_db.
+      Provider.of<AppDb>(context, listen: false)
+          .insertEmployee(entity).then(
             (value) => ScaffoldMessenger.of(context).showMaterialBanner(
               MaterialBanner(
                 backgroundColor: Colors.pink,
